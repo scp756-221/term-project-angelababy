@@ -33,6 +33,7 @@ IC=istioctl
 APP_VER_TAG=v1
 S2_VER=v1
 LOADER_VER=v1
+S3_VER=v1
 
 # Kubernetes parameters that most of the time will be unchanged
 # but which you might override as projects become sophisticated
@@ -69,7 +70,7 @@ provision: istio prom deploy
 # --- deploy: Deploy and monitor the three microservices
 # Use `provision` to deploy the entire stack (including Istio, Prometheus, ...).
 # This target only deploys the sample microservices
-deploy: appns gw s1 s2 db monitoring
+deploy: appns gw s1 s2 s3 db monitoring
 	$(KC) -n $(APP_NS) get gw,vs,deploy,svc,pods
 
 # --- rollout: Rollout new deployments of all microservices
@@ -132,6 +133,9 @@ log-s1:
 log-s2:
 	$(KC) -n $(APP_NS) logs deployment/cmpt756s2 --container cmpt756s2
 
+log-s3:
+	$(KC) -n $(APP_NS) logs deployment/cmpt756s3 --container cmpt756s3
+
 log-db:
 	$(KC) -n $(APP_NS) logs deployment/cmpt756db --container cmpt756db
 
@@ -144,6 +148,10 @@ shell-s1:
 shell-s2:
 	@echo Use the following command line to drop into the s2 service:
 	@echo   $(KC) -n $(APP_NS) exec -it deployment/cmpt756s2 --container cmpt756s2 -- bash
+
+shell-s3:
+	@echo Use the following command line to drop into the s3 service:
+	@echo   $(KC) -n $(APP_NS) exec -it deployment/cmpt756s3 --container cmpt756s3 -- bash
 
 shell-db:
 	@echo Use the following command line to drop into the db service:
@@ -287,6 +295,12 @@ s2: rollout-s2 cluster/s2-svc.yaml cluster/s2-sm.yaml cluster/s2-vs.yaml
 	$(KC) -n $(APP_NS) apply -f cluster/s2-sm.yaml | tee -a $(LOG_DIR)/s2.log
 	$(KC) -n $(APP_NS) apply -f cluster/s2-vs.yaml | tee -a $(LOG_DIR)/s2.log
 
+# Update S3 and associated monitoring, rebuilding if necessary
+s3: $(LOG_DIR)/s3.repo.log cluster/s3.yaml cluster/s3-sm.yaml cluster/s3-vs.yaml
+	$(KC) -n $(APP_NS) apply -f cluster/s3.yaml | tee $(LOG_DIR)/s3.log
+	$(KC) -n $(APP_NS) apply -f cluster/s3-sm.yaml | tee -a $(LOG_DIR)/s3.log
+	$(KC) -n $(APP_NS) apply -f cluster/s3-vs.yaml | tee -a $(LOG_DIR)/s3.log
+
 # Update DB and associated monitoring, rebuilding if necessary
 db: $(LOG_DIR)/db.repo.log cluster/awscred.yaml cluster/dynamodb-service-entry.yaml cluster/db.yaml cluster/db-sm.yaml cluster/db-vs.yaml
 	$(KC) -n $(APP_NS) apply -f cluster/awscred.yaml | tee $(LOG_DIR)/db.log
@@ -296,7 +310,7 @@ db: $(LOG_DIR)/db.repo.log cluster/awscred.yaml cluster/dynamodb-service-entry.y
 	$(KC) -n $(APP_NS) apply -f cluster/db-vs.yaml | tee -a $(LOG_DIR)/db.log
 
 # Build & push the images up to the CR
-cri: $(LOG_DIR)/s1.repo.log $(LOG_DIR)/s2-$(S2_VER).repo.log $(LOG_DIR)/db.repo.log
+cri: $(LOG_DIR)/s1.repo.log $(LOG_DIR)/s2-$(S2_VER).repo.log $(LOG_DIR)/db.repo.log $(LOG_DIR)/s3.repo.log
 
 # Build the s1 service
 $(LOG_DIR)/s1.repo.log: s1/Dockerfile s1/app.py s1/requirements.txt
@@ -310,6 +324,40 @@ $(LOG_DIR)/s2-$(S2_VER).repo.log: s2/$(S2_VER)/Dockerfile s2/$(S2_VER)/app.py s2
 	$(DK) build $(ARCH) -t $(CREG)/$(REGID)/cmpt756s2:$(S2_VER) s2/$(S2_VER) | tee $(LOG_DIR)/s2-$(S2_VER).img.log
 	$(DK) push $(CREG)/$(REGID)/cmpt756s2:$(S2_VER) | tee $(LOG_DIR)/s2-$(S2_VER).repo.log
 
+# Build the s3 service
+$(LOG_DIR)/s3.repo.log: s3/Dockerfile s3/app.py s3/requirements.txt
+	make -f k8s.mak --no-print-directory registry-login
+	$(DK) build $(ARCH) -t $(CREG)/$(REGID)/cmpt756s3:$(APP_VER_TAG) s3 | tee $(LOG_DIR)/s3.img.log
+	$(DK) push $(CREG)/$(REGID)/cmpt756s3:$(APP_VER_TAG) | tee $(LOG_DIR)/s3.repo.log
+
+# Build the s2 service
+$(LOG_DIR)/s2-$(S2_VER).repo.log: s2/$(S2_VER)/Dockerfile s2/$(S2_VER)/app.py s2/$(S2_VER)/requirements.txt
+	make -f k8s.mak --no-print-directory registry-login
+	$(DK) build $(ARCH) -t $(CREG)/$(REGID)/cmpt756s2:$(S2_VER) s2/$(S2_VER) | tee $(LOG_DIR)/s2-$(S2_VER).img.log
+	$(DK) push $(CREG)/$(REGID)/cmpt756s2:$(S2_VER) | tee $(LOG_DIR)/s2-$(S2_VER).repo.log
+
+# Build the db service
+$(LOG_DIR)/db.repo.log: db/Dockerfile db/app.py db/requirements.txt
+	make -f k8s.mak --no-print-directory registry-login
+	$(DK) build $(ARCH) -t $(CREG)/$(REGID)/cmpt756db:$(APP_VER_TAG) db | tee $(LOG_DIR)/db.img.log
+	$(DK) push $(CREG)/$(REGID)/cmpt756db:$(APP_VER_TAG) | tee $(LOG_DIR)/db.repo.log
+
+# Build the loader
+$(LOG_DIR)/loader.repo.log: loader/app.py loader/requirements.txt loader/Dockerfile registry-login
+	$(DK) build $(ARCH) -t $(CREG)/$(REGID)/cmpt756loader:$(LOADER_VER) loader  | tee $(LOG_DIR)/loader.img.log
+	$(DK) push $(CREG)/$(REGID)/cmpt756loader:$(LOADER_VER) | tee $(LOG_DIR)/loader.repo.log
+
+# Push all the container images to the container registry
+# This isn't often used because the individual build targets also push
+# the updated images to the registry
+cr: registry-login
+	$(DK) push $(CREG)/$(REGID)/cmpt756s1:$(APP_VER_TAG) | tee $(LOG_DIR)/s1.repo.log
+	$(DK) push $(CREG)/$(REGID)/cmpt756s2:$(S2_VER) | tee $(LOG_DIR)/s2.repo.log
+	$(DK) push $(CREG)/$(REGID)/cmpt756db:$(APP_VER_TAG) | tee $(LOG_DIR)/db.repo.log
+
+# ---------------------------------------------------------------------------------------
+# Handy bits for exploring the container images... not necessary
+image: showcontext registry-login
 # Build the db service
 $(LOG_DIR)/db.repo.log: db/Dockerfile db/app.py db/requirements.txt
 	make -f k8s.mak --no-print-directory registry-login
