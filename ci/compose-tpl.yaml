@@ -1,4 +1,4 @@
-# Set up an integration test of DB, S1, and S2 using a local
+# Set up an integration test of DB, S1, S2 and S3 using a local
 # DynamoDB.  Assumes a fresh environment where none of the
 # images have been created (or, if an image exists, that it
 # is current).  The DynamoDB keeps all tables in memory,
@@ -20,7 +20,7 @@ services:
     ports:
       - "30002:30002"
     environment:
-      AWS_REGION: 'us-west-2'
+      AWS_REGION: 'ZZ-AWS-REGION'
       AWS_ACCESS_KEY_ID: 'DUMMY_KEY_ID'
       AWS_SECRET_ACCESS_KEY: 'DUMMY_ACCESS_ KEY'
       SVC_LOADER_TOKEN: 'DUMMY_LOADER_TOKEN'
@@ -47,13 +47,13 @@ services:
     depends_on:
       - dynamodb-local
       - cmpt756db
-    build: ../s2
+    build: ../s3
     image: ci_s3
     container_name: cmpt756s3
     ports:
      - "30003:30003"
   test:
-    command: "pytest --user_address cmpt756s1 --user_port 30000 --music_address cmpt756s2 --music_port 30001 --playlist_address cmpt756s3 --playlist_port 30003 --table_suffix ahr5"
+    command: "pytest --user_address cmpt756s1 --user_port 30000 --music_address cmpt756s2 --music_port 30001 --playlist_address cmpt756s3 --platlist_port 30003 --table_suffix ZZ-REG-ID"
     depends_on:
       - dynamodb-local
       - cmpt756db
@@ -64,7 +64,7 @@ services:
     image: ci_test
     container_name: test
     environment:
-      AWS_REGION: 'us-west-2'
+      AWS_REGION: 'ZZ-AWS-REGION'
       AWS_ACCESS_KEY_ID: 'DUMMY_KEY_ID'
       AWS_SECRET_ACCESS_KEY: 'DUMMY_ACCESS_ KEY'
       SVC_LOADER_TOKEN: 'DUMMY_LOADER_TOKEN'
