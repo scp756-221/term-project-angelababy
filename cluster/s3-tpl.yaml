@@ -33,7 +33,7 @@ metadata:
   labels:
     account: SVC_S3
 ---
-apiVersion: apps/v3
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cmpt756s3
