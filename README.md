@@ -4,6 +4,7 @@ Term Project repo
 
 # Deployment
 ```bash
+./toos/shell.sh
 https://github.com/scp756-221/term-project-angelababy.git
 cd term-project-angelababy
 git checkout deployment
