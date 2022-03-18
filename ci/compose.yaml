@@ -48,12 +48,12 @@ services:
       - dynamodb-local
       - cmpt756db
     build: ../s2
-    image: ci_s2
+    image: ci_s3
     container_name: cmpt756s3
     ports:
-     - "30002:30002"
+     - "30003:30003"
   test:
-    command: "pytest --user_address cmpt756s1 --user_port 30000 --music_address cmpt756s2 --music_port 30001 --playlist_address cmpt756s3 --playlist_port 30002 --table_suffix ahr5"
+    command: "pytest --user_address cmpt756s1 --user_port 30000 --music_address cmpt756s2 --music_port 30001 --playlist_address cmpt756s3 --playlist_port 30003 --table_suffix ahr5"
     depends_on:
       - dynamodb-local
       - cmpt756db
