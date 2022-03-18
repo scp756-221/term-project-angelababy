@@ -31,7 +31,7 @@ kubectl get svc --all-namespaces | cut -c -140
 make -f k8s.mak cri
 make -f k8s.mak gw db s2 s3
 
-#start k9s to check if the services are deployment successfully
+#start k9s to check if the services are deploymented successfully
 k9s
 ```
 <img src="media/ts1.png" width="80%" height="80%" />
