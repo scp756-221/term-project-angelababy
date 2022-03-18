@@ -23,6 +23,10 @@ kubectl config use-context aws756
 istioctl install -y --set profile=demo --set hub=gcr.io/istio-release
 kubectl label namespace c756ns istio-injection=enabled
 kubectl get svc --all-namespaces | cut -c -140
+
+# Build & push the images up to the CR
+# check if there's image of s3 in your github package after calling this command
+# change the visibility to public
 make -f k8s.mak cri
 make -f k8s.mak gw db s2 s3
 
