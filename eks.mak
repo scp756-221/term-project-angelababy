@@ -28,7 +28,7 @@ EKS_CTX=aws756
 
 NGROUP=worker-nodes
 NTYPE=t3.medium
-REGION=us-east-1
+REGION=us-west-2
 KVER=1.21
 
 

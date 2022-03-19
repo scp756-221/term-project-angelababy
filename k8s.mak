@@ -16,8 +16,8 @@
 
 # These will be filled in by template processor
 CREG=ghcr.io
-REGID=bucktoothsir
-AWS_REGION=us-east-1
+REGID=ahr5
+AWS_REGION=us-west-2
 
 # Keep all the logs out of main directory
 LOG_DIR=logs
@@ -34,6 +34,7 @@ APP_VER_TAG=v1
 S2_VER=v1
 LOADER_VER=v1
 S3_VER=v1
+
 
 # Kubernetes parameters that most of the time will be unchanged
 # but which you might override as projects become sophisticated
@@ -74,7 +75,7 @@ deploy: appns gw s1 s2 s3 db monitoring
 	$(KC) -n $(APP_NS) get gw,vs,deploy,svc,pods
 
 # --- rollout: Rollout new deployments of all microservices
-rollout: rollout-s1 rollout-s2 rollout-db
+rollout: rollout-s1 rollout-s2 rollout-s3 rollout-db
 
 # --- rollout-s1: Rollout a new deployment of S1
 rollout-s1: s1
@@ -84,6 +85,10 @@ rollout-s1: s1
 rollout-s2: $(LOG_DIR)/s2-$(S2_VER).repo.log  cluster/s2-dpl-$(S2_VER).yaml
 	$(KC) -n $(APP_NS) apply -f cluster/s2-dpl-$(S2_VER).yaml | tee $(LOG_DIR)/rollout-s2.log
 	$(KC) rollout -n $(APP_NS) restart deployment/cmpt756s2-$(S2_VER) | tee -a $(LOG_DIR)/rollout-s2.log
+
+# --- rollout-s3: Rollout a new deployment of S3
+rollout-s3: s3
+	$(KC) rollout -n $(APP_NS) restart deployment/cmpt756s3
 
 # --- rollout-db: Rollout a new deployment of DB
 rollout-db: db
@@ -110,7 +115,7 @@ scratch: clean
 
 # --- clean: Delete all the application log files
 clean:
-	/bin/rm -f $(LOG_DIR)/{s1,s2,db,gw,monvs}*.log $(LOG_DIR)/rollout*.log
+	/bin/rm -f $(LOG_DIR)/{s1,s2,s3,db,gw,monvs}*.log $(LOG_DIR)/rollout*.log
 
 # --- dashboard: Start the standard Kubernetes dashboard
 # NOTE:  Before invoking this, the dashboard must be installed and a service account created
@@ -195,14 +200,14 @@ dynamodb-init: $(LOG_DIR)/dynamodb-init.log
 $(LOG_DIR)/dynamodb-init.log: cluster/cloudformationdynamodb.json
 	@# "|| true" suffix because command fails when stack already exists
 	@# (even with --on-failure DO_NOTHING, a nonzero error code is returned)
-	$(AWS) cloudformation create-stack --stack-name db-bucktoothsir --template-body file://$< || true | tee $(LOG_DIR)/dynamodb-init.log
+	$(AWS) cloudformation create-stack --stack-name db-ahr5 --template-body file://$< || true | tee $(LOG_DIR)/dynamodb-init.log
 	# Must give DynamoDB time to create the tables before running the loader
 	sleep 20
 
 # --- dynamodb-stop: Stop the AWS DynamoDB service
 #
 dynamodb-clean:
-	$(AWS) cloudformation delete-stack --stack-name db-bucktoothsir || true | tee $(LOG_DIR)/dynamodb-clean.log
+	$(AWS) cloudformation delete-stack --stack-name db-ahr5 || true | tee $(LOG_DIR)/dynamodb-clean.log
 	@# Rename DynamoDB log so dynamodb-init will force a restart but retain the log
 	/bin/mv -f $(LOG_DIR)/dynamodb-init.log $(LOG_DIR)/dynamodb-init-old.log || true
 
@@ -312,6 +317,7 @@ db: $(LOG_DIR)/db.repo.log cluster/awscred.yaml cluster/dynamodb-service-entry.y
 # Build & push the images up to the CR
 cri: $(LOG_DIR)/s1.repo.log $(LOG_DIR)/s2-$(S2_VER).repo.log $(LOG_DIR)/db.repo.log $(LOG_DIR)/s3.repo.log
 
+
 # Build the s1 service
 $(LOG_DIR)/s1.repo.log: s1/Dockerfile s1/app.py s1/requirements.txt
 	make -f k8s.mak --no-print-directory registry-login
@@ -330,12 +336,6 @@ $(LOG_DIR)/s3.repo.log: s3/Dockerfile s3/app.py s3/requirements.txt
 	$(DK) build $(ARCH) -t $(CREG)/$(REGID)/cmpt756s3:$(APP_VER_TAG) s3 | tee $(LOG_DIR)/s3.img.log
 	$(DK) push $(CREG)/$(REGID)/cmpt756s3:$(APP_VER_TAG) | tee $(LOG_DIR)/s3.repo.log
 
-# Build the s2 service
-$(LOG_DIR)/s2-$(S2_VER).repo.log: s2/$(S2_VER)/Dockerfile s2/$(S2_VER)/app.py s2/$(S2_VER)/requirements.txt
-	make -f k8s.mak --no-print-directory registry-login
-	$(DK) build $(ARCH) -t $(CREG)/$(REGID)/cmpt756s2:$(S2_VER) s2/$(S2_VER) | tee $(LOG_DIR)/s2-$(S2_VER).img.log
-	$(DK) push $(CREG)/$(REGID)/cmpt756s2:$(S2_VER) | tee $(LOG_DIR)/s2-$(S2_VER).repo.log
-
 # Build the db service
 $(LOG_DIR)/db.repo.log: db/Dockerfile db/app.py db/requirements.txt
 	make -f k8s.mak --no-print-directory registry-login
@@ -353,28 +353,7 @@ $(LOG_DIR)/loader.repo.log: loader/app.py loader/requirements.txt loader/Dockerf
 cr: registry-login
 	$(DK) push $(CREG)/$(REGID)/cmpt756s1:$(APP_VER_TAG) | tee $(LOG_DIR)/s1.repo.log
 	$(DK) push $(CREG)/$(REGID)/cmpt756s2:$(S2_VER) | tee $(LOG_DIR)/s2.repo.log
-	$(DK) push $(CREG)/$(REGID)/cmpt756db:$(APP_VER_TAG) | tee $(LOG_DIR)/db.repo.log
-
-# ---------------------------------------------------------------------------------------
-# Handy bits for exploring the container images... not necessary
-image: showcontext registry-login
-# Build the db service
-$(LOG_DIR)/db.repo.log: db/Dockerfile db/app.py db/requirements.txt
-	make -f k8s.mak --no-print-directory registry-login
-	$(DK) build $(ARCH) -t $(CREG)/$(REGID)/cmpt756db:$(APP_VER_TAG) db | tee $(LOG_DIR)/db.img.log
-	$(DK) push $(CREG)/$(REGID)/cmpt756db:$(APP_VER_TAG) | tee $(LOG_DIR)/db.repo.log
-
-# Build the loader
-$(LOG_DIR)/loader.repo.log: loader/app.py loader/requirements.txt loader/Dockerfile registry-login
-	$(DK) build $(ARCH) -t $(CREG)/$(REGID)/cmpt756loader:$(LOADER_VER) loader  | tee $(LOG_DIR)/loader.img.log
-	$(DK) push $(CREG)/$(REGID)/cmpt756loader:$(LOADER_VER) | tee $(LOG_DIR)/loader.repo.log
-
-# Push all the container images to the container registry
-# This isn't often used because the individual build targets also push
-# the updated images to the registry
-cr: registry-login
-	$(DK) push $(CREG)/$(REGID)/cmpt756s1:$(APP_VER_TAG) | tee $(LOG_DIR)/s1.repo.log
-	$(DK) push $(CREG)/$(REGID)/cmpt756s2:$(S2_VER) | tee $(LOG_DIR)/s2.repo.log
+	$(DK) push $(CREG)/$(REGID)/cmpt756s3:$(APP_VER_TAG) | tee $(LOG_DIR)/s3.repo.log
 	$(DK) push $(CREG)/$(REGID)/cmpt756db:$(APP_VER_TAG) | tee $(LOG_DIR)/db.repo.log
 
 # ---------------------------------------------------------------------------------------
