@@ -4,10 +4,11 @@ Term Project repo
 
 # Deployment
 ```bash
-./toos/shell.sh
 git clone https://github.com/scp756-221/term-project-angelababy.git
 cd term-project-angelababy
 git checkout deployment
+./toos/shell.sh
+
 
 #update tpl-vars.txt with your own infos
 cp cluster/tpl-vars-blank.txt cluster/tpl-vars.txt 
