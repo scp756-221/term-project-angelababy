@@ -85,14 +85,14 @@ def add_song_to_playlist(playlist_id):
         headers={'Authorization': headers['Authorization']})
     songs = response.json()['Items'][0]['Songs']
 
+    try:
+        content = request.get_json()
+        song = content['music_id']
+    except Exception:
+        return json.dumps({"message": f"Failed to add song: {song}"})
+    
     if song in songs:
         return json.dumps({"message": f"song: {song} already exists in playlist: {playlist_id}"})
-    else:
-        try:
-            content = request.get_json()
-            song = content['music_id']
-        except Exception:
-            return json.dumps({"message": f"Failed to add song: {song}"})
 
     songs.append(song)
     url = db['name'] + '/' + db['endpoint'][3]
