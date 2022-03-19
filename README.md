@@ -6,7 +6,6 @@ Term Project repo
 ```bash
 git clone https://github.com/scp756-221/term-project-angelababy.git
 cd term-project-angelababy
-git checkout deployment
 ./toos/shell.sh
 
 
