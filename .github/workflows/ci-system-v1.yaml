@@ -5,10 +5,10 @@ on:
     paths:
       - db/*
       - s1/*
-      - s2/v1/*
+      - s2/*
       - s3/*
       - ci/v1/*
-      - .github/workflows/ci-system-v1.1.yaml
+      - .github/workflows/ci-system-v1.yaml
 
 jobs:
   build:
