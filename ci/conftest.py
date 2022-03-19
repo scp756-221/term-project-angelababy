@@ -49,7 +49,7 @@ def pytest_addoption(parser):
         help="Port number of music service."
         )
     parser.addoption(
-    	'--playlist_port',
+    	'--playlist_address',
     	help='DNS name or IP address of playlist service.'
     	)
     parser.addoption(
