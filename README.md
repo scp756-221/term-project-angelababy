@@ -4,9 +4,10 @@ Term Project repo
 
 # Deployment
 ```bash
-https://github.com/scp756-221/term-project-angelababy.git
+git clone https://github.com/scp756-221/term-project-angelababy.git
 cd term-project-angelababy
-git checkout deployment
+./toos/shell.sh
+
 
 #update tpl-vars.txt with your own infos
 cp cluster/tpl-vars-blank.txt cluster/tpl-vars.txt 
@@ -23,10 +24,18 @@ kubectl config use-context aws756
 istioctl install -y --set profile=demo --set hub=gcr.io/istio-release
 kubectl label namespace c756ns istio-injection=enabled
 kubectl get svc --all-namespaces | cut -c -140
+
+
+# Build & push the images up to the CR
+# check if there's image of s3 in your github package after calling this command
+# change the visibility to public
 make -f k8s.mak cri
 make -f k8s.mak gw db s2 s3
 
-#start k9s to check if the services are deployment successfully
+#start k9s to check if the services are deploymented successfully
 k9s
 ```
+<img src="media/ts1.png" width="80%" height="80%" />
+<img src="media/ts2.png" width="80%" height="80%" />
+<img src="media/ts3.png" width="80%" height="80%" />
 
