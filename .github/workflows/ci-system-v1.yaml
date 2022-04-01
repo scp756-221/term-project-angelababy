@@ -1,4 +1,4 @@
-name: CI test of v1.1 music 
+name: CI test of s1, s2, s3
 
 on:
   push:
@@ -27,7 +27,7 @@ jobs:
         # any documentation for how to invoke it.
         run: |
           curl -L "https://github.com/docker/compose/releases/download/${{ env.DOCKER_COMPOSE_VER }}/docker-compose-linux-${{ env.ARCH_CLASS }}" \
-             -o tools/docker-compose-v2
+             -o ci/tools/docker-compose-v2
           chmod +x tools/docker-compose-v2
       - name: Install flake8
         # Specify the precise Flake8 version so that we get exactly the same tests as locally
@@ -42,4 +42,4 @@ jobs:
       - name: Run CI test
         run: |
           cd ci
-          COMPOSE_PATH=../tools/docker-compose-v2 ./runci.sh v1
+          COMPOSE_PATH=tools/docker-compose-v2 ./runci.sh v1
