@@ -7,7 +7,7 @@ on:
       - s1/*
       - s2/*
       - s3/*
-      - ci/v1/*
+      - ci/*
       - .github/workflows/ci-system-v1.yaml
 
 jobs:
