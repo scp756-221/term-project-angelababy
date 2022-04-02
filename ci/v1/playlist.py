@@ -30,7 +30,6 @@ class PlayList():
         if r.status_code != 200:
             return r.status_code, None, None
         item = r.json()['Items'][0]
-        print(r.json())
         return r.status_code, item["PlayListName"], item["Songs"]
 
     def add(self, pl_id, m_id):
