@@ -47,3 +47,9 @@ class PlayList():
             headers={'Authorization': self._auth}
         )
         return r.status_code
+
+    def delete(self, pl_id):
+        requests.delete(
+            self._url + pl_id,
+            headers={'Authorization': self._auth}
+        )

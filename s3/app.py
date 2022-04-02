@@ -125,7 +125,7 @@ def delete_song_from_playlist(playlist_id):
                            "doesn't exist in the playlist"})
     else:
         try:
-            songs = songs.remove(music_id)
+            songs.remove(music_id)
         except Exception:
             return json.dumps({"message": "Failed to remove music_id:" +
                               f"{music_id} from playlist"})
