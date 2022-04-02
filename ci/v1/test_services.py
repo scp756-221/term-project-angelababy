@@ -105,11 +105,11 @@ def test_simple_run_s3(mserv, plserv, song, song2, myPlayList):
     # Original recording, 1952
     trc, m_id = mserv.create(song[0], song[1])
     trc, m2_id = mserv.create(song2[0], song2[1])
-    trc, pl_id = plserv.create(myPlayList[0], [m_id])
+    trc, pl_id = plserv.create(myPlayList, [m_id])
     assert trc == 200
 
     trc, pl_name, songs = plserv.get(pl_id)
-    assert (trc == 200 and pl_name == myPlayList[0] and songs == [m_id])
+    assert (trc == 200 and pl_name == myPlayList and songs == [m_id])
 
     trc = plserv.add(pl_id, m2_id)
     assert trc == 200
