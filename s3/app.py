@@ -91,7 +91,6 @@ def add_song_to_playlist(playlist_id):
     except Exception:
         return json.dumps({"message": f"Failed to add song: {song}"})
 
-
     if song in songs:
         return json.dumps({"message": f"song: {song} already exists" +
                                       f"in playlist: {playlist_id}"})
