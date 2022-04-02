@@ -1,5 +1,4 @@
 """
-Test the *_original_artist routines.
 
 These tests are invoked by running `pytest` with the
 appropriate options and environment variables, as
@@ -13,11 +12,13 @@ import pytest
 
 # Local modules
 import music
+import user
+import playlist
 
 
 @pytest.fixture
 def userv(request, user_url, auth):
-    return music.User(user_url, auth)
+    return user.User(user_url, auth)
 
 
 @pytest.fixture
@@ -51,7 +52,7 @@ def test_simple_run_s1(userv, username, new_user):
 
     userv.delete(user_id)
     try:
-        trc = mserv.read(user_id)
+        trc = userv.get(user_id)
         assert False
     except Exception:
         assert True
@@ -86,7 +87,7 @@ def test_simple_run_s2(mserv, song):
 
 @pytest.fixture
 def plserv(request, playlist_url, auth):
-    return music.PlayList(playlist_url, auth)
+    return playlist.PlayList(playlist_url, auth)
 
 
 @pytest.fixture
