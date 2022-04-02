@@ -28,7 +28,7 @@ class Music():
         self._url = url
         self._auth = auth
 
-    def create(self, artist, song, orig_artist=None):
+    def create(self, artist, song):
         """Create an artist, song pair.
 
         Parameters
@@ -37,8 +37,6 @@ class Music():
             The artist performing song.
         song: string
             The name of the song.
-        orig_artist: string or None
-            The name of the original performer of this song.
 
         Returns
         -------
@@ -46,13 +44,10 @@ class Music():
             The number is the HTTP status code returned by Music.
             The string is the UUID of this song in the music database.
         """
-        payload = {'Artist': artist,
-                   'SongTitle': song}
-        if orig_artist is not None:
-            payload['OrigArtist'] = orig_artist
         r = requests.post(
             self._url,
-            json=payload,
+            json={'Artist': artist,
+                  'SongTitle': song},
             headers={'Authorization': self._auth}
         )
         return r.status_code, r.json()['music_id']
@@ -67,7 +62,7 @@ class Music():
 
         Returns
         -------
-        status, artist, title, orig_artist
+        status, artist, title
 
         status: number
             The HTTP status code returned by Music.
@@ -75,22 +70,16 @@ class Music():
           If status is not 200, None.
         title: If status is 200, the title of the song.
           If status is not 200, None.
-        orig_artist: If status is 200 and the song has an
-          original artist field, the artist's name.
-          If the status is not 200 or there is no original artist
-          field, None.
         """
         r = requests.get(
             self._url + m_id,
             headers={'Authorization': self._auth}
             )
         if r.status_code != 200:
-            return r.status_code, None, None, None
+            return r.status_code, None, None
 
         item = r.json()['Items'][0]
-        OrigArtist = (item['OrigArtist'] if 'OrigArtist' in item
-                      else None)
-        return r.status_code, item['Artist'], item['SongTitle'], OrigArtist
+        return r.status_code, item['Artist'], item['SongTitle']
 
     def delete(self, m_id):
         """Delete an artist, song pair.
@@ -109,3 +98,87 @@ class Music():
             self._url + m_id,
             headers={'Authorization': self._auth}
         )
+
+
+class User():
+    def __init__(self, url, auth):
+        self._url = url
+        self._auth = auth
+
+    def create(self, lname, email, fname):
+        r = requests.post(
+            self._url,
+            json={'lname': lname,
+                  'email': email,
+                  'fname': fname, },
+            headers={'Authorization': self._auth}
+        )
+        return r.status_code, r.json()['user_id']
+
+    def update(self, u_id, lname, email, fname):
+        r = requests.put(
+            self._url + u_id,
+            json={'lname': lname,
+                  'email': email,
+                  'fname': fname, },
+            headers={'Authorization': self._auth}
+        )
+        return r.status_code, r.json()
+
+    def get(self, u_id):
+        r = requests.get(
+            self._url + u_id,
+            headers={'Authorization': self._auth}
+            )
+        if r.status_code != 200:
+            return r.status_code, None, None
+
+        item = r.json()['Items'][0]
+        return r.status_code, item['lname'], item['email'], item['fname']
+
+    def delete(self, u_id):
+        requests.delete(
+            self._url + u_id,
+            headers={'Authorization': self._auth}
+        )
+
+
+class PlayList():
+    def __init__(self, url, auth):
+        self._url = url
+        self._auth = auth
+
+    def create(self, playListName, songs):
+        r = requests.post(
+            self._url,
+            json={'PlayListName': playListName,
+                  'Songs': songs, },
+            headers={'Authorization': self._auth}
+        )
+        return r.status_code, r.json()['playlist_id']
+
+    def get(self, pl_id):
+        r = requests.get(
+            self._url + pl_id,
+            headers={'Authorization': self._auth}
+            )
+        if r.status_code != 200:
+            return r.status_code, None, None
+        item = r.json()['Items'][0]
+        return r.status_code, item["PlayListName"], item["Songs"]
+
+    def add(self, pl_id, m_id):
+        r = requests.put(
+            self._url + 'add_song_to_list/' + pl_id,
+            json={'music_id': m_id},
+            headers={'Authorization': self._auth}
+        )
+        return r.status_code
+
+    def delete_song(self, pl_id, m_id):
+        r = requests.put(
+            self._url + 'delete_song_from_list/' + pl_id,
+            json={'music_id': m_id},
+            headers={'Authorization': self._auth}
+        )
+        return r.status_code
