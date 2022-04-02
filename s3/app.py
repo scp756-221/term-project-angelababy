@@ -90,9 +90,11 @@ def add_song_to_playlist(playlist_id):
         song = content['music_id']
     except Exception:
         return json.dumps({"message": f"Failed to add song: {song}"})
-    
+
+
     if song in songs:
-        return json.dumps({"message": f"song: {song} already exists in playlist: {playlist_id}"})
+        return json.dumps({"message": f"song: {song} already exists" +
+                                      f"in playlist: {playlist_id}"})
 
     songs.append(song)
     url = db['name'] + '/' + db['endpoint'][3]
@@ -120,12 +122,14 @@ def delete_song_from_playlist(playlist_id):
 
     songs = get_playlist(playlist_id)['Items'][0]['Songs']
     if music_id not in songs:
-        return json.dumps({"message": f"music_id: {music_id} doesn't exist in the playlist"})
+        return json.dumps({"message": f"music_id: {music_id}" +
+                           "doesn't exist in the playlist"})
     else:
         try:
             songs = songs.remove(music_id)
         except Exception:
-            return json.dumps({"message": f"Failed to remove music_id: {music_id} from playlist"})
+            return json.dumps({"message": "Failed to remove music_id:" +
+                              f"{music_id} from playlist"})
 
     payload = {"objtype": "playlist", "objkey": playlist_id}
     url = db['name'] + '/' + db['endpoint'][3]
@@ -154,7 +158,9 @@ def create_playlist():
     url = db['name'] + '/' + db['endpoint'][1]
     response = requests.post(
         url,
-        json={"objtype": "playlist", "PlayListName": PlayListName, "Songs": Songs},
+        json={"objtype": "playlist",
+              "PlayListName": PlayListName,
+              "Songs": Songs},
         headers={'Authorization': headers['Authorization']})
     return (response.json())
 
