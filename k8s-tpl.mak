@@ -82,9 +82,14 @@ rollout-s1: s1
 	$(KC) rollout -n $(APP_NS) restart deployment/cmpt756s1
 
 # --- rollout-s2: Rollout a new deployment of S2
-rollout-s2: $(LOG_DIR)/s2-$(S2_VER).repo.log  cluster/s2-dpl-$(S2_VER).yaml
+rollout-s2: $(LOG_DIR)/s2.repo.log  cluster/s2-dpl-$(S2_VER).yaml
 	$(KC) -n $(APP_NS) apply -f cluster/s2-dpl-$(S2_VER).yaml | tee $(LOG_DIR)/rollout-s2.log
-	$(KC) rollout -n $(APP_NS) restart deployment/cmpt756s2-$(S2_VER) | tee -a $(LOG_DIR)/rollout-s2.log
+	$(KC) rollout -n $(APP_NS) restart deployment/cmpt756s2 | tee -a $(LOG_DIR)/rollout-s2.log
+
+# --- rollout-s2: Rollout a new deployment of S2
+#rollout-s2: $(LOG_DIR)/s2-$(S2_VER).repo.log  cluster/s2-dpl-$(S2_VER).yaml
+#	$(KC) -n $(APP_NS) apply -f cluster/s2-dpl-$(S2_VER).yaml | tee $(LOG_DIR)/rollout-s2.log
+#	$(KC) rollout -n $(APP_NS) restart deployment/cmpt756s2-$(S2_VER) | tee -a $(LOG_DIR)/rollout-s2.log
 
 # --- rollout-s3: Rollout a new deployment of S3
 rollout-s3: s3
