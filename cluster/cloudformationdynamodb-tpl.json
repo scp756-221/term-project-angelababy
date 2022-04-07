@@ -48,7 +48,7 @@
       "tablePlaylist": {
         "Type": "AWS::DynamoDB::Table",
         "Properties": {
-          "TableName": "User-ZZ-REG-ID",
+          "TableName": "Playlist-ZZ-REG-ID",
           "AttributeDefinitions": [
             {
               "AttributeName": "playlist_id",
