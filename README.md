@@ -209,7 +209,7 @@ kubectl get svc --all-namespaces | cut -c -140
 # check if there's image of s3 in your github package after calling this command
 # change the visibility to public
 make -f k8s.mak cri
-make -f k8s.mak gw db s2 s3
+make -f k8s.mak gw db s1 s2 s3
 
 #start k9s to check if the services are deploymented successfully
 k9s
