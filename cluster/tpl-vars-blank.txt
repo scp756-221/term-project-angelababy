@@ -13,7 +13,7 @@ ZZ-REG-ID=
 # us-west-2 is the AWS region closest to Vancouver and therefore
 # will have the lowest geolatency.
 #
-ZZ-AWS-REGION=us-west-2
+ZZ-AWS-REGION=us-east-1
 #
 # Replace 'key_id' with the access key id for your IAM administrative id.
 #
