@@ -185,7 +185,7 @@ Assorted scripts that you can pick and choose from:
 ```bash
 git clone https://github.com/scp756-221/term-project-angelababy.git
 cd term-project-angelababy
-./toos/shell.sh
+./tools/shell.sh
 
 
 #update tpl-vars.txt with your own infos
