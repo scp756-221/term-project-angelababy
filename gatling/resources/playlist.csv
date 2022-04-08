@@ -1,5 +1,6 @@
 Name,Songs,UUID
-butter_playlist,["wangwangwang", "song of dog"],3b30995d-15b9-4040-b3da-45d2dabce027
-bubbles_playlist,["miaomiaomiao", "song of cat"],42c95b20-451f-41fc-a85b-7975eda05fef
-bunny_playlist,["hahah", "song of bunny"],422051a2-ea74-4482-8e72-13b16472bebe
-goose_playlist,["guagua", "song of goose"],1a01cd1b-29f6-4077-b005-07ecdfeac014
+butter_playlist,"['wangwangwang', 'song of dog']",3b30995d-15b9-4040-b3da-45d2dabce027
+bubbles_playlist,"['miaomiaomiao', 'song of cat']",42c95b20-451f-41fc-a85b-7975eda05fef
+bunny_playlist,"['hahah', 'song of bunny']",422051a2-ea74-4482-8e72-13b16472bebe
+goose_playlist,"['guagua', 'song of goose']",1a01cd1b-29f6-4077-b005-07ecdfeac014
+
