@@ -185,7 +185,7 @@ Assorted scripts that you can pick and choose from:
 ```bash
 git clone https://github.com/scp756-221/term-project-angelababy.git
 cd term-project-angelababy
-./toos/shell.sh
+./tools/shell.sh
 
 
 #update tpl-vars.txt with your own infos
@@ -212,7 +212,7 @@ make -f k8s.mak cri
 make -f k8s.mak gw db s1 s2 s3
 
 #start k9s to check if the services are deploymented successfully
-k9s
+k9s -n c756ns
 ```
 <img src="media/ts1.png" width="80%" height="80%" />
 <img src="media/ts2.png" width="80%" height="80%" />
