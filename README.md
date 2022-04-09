@@ -6,6 +6,166 @@ This is the course repo for CMPT 756 (Spring 2022) of team AngelaBaby.
 
 ## Directory Structure
 
+This is the directory structure of our project:
+
+~~~
+term-project-angelababy
+├── allclouds-tpl.mak
+├── api-tpl.mak
+├── az-tpl.mak
+├── eks-tpl.mak
+├── gatling-all.sh
+├── gatling-music.sh
+├── gatling-playlist.sh
+├── gatling-user.sh
+├── gcp-tpl.mak
+├── helm-kube-stack-values.yaml
+├── k8s-tpl.mak
+├── mk-tpl.mak
+├── monitoring-lb-services.yaml
+├── obs.mak
+├── README.md
+├── ci
+│   ├── clear-ci-images.sh
+│   ├── create-local-tables.sh
+│   ├── create-local-tables-tpl.sh
+│   ├── quick-test.sh
+│   ├── runci-local.sh
+│   ├── runci.sh
+│   ├── tools
+│   │   └── README.md
+│   └── v1
+│       ├── ci_test.py
+│       ├── compose-tpl.yaml
+│       ├── compose.yaml
+│       ├── conftest.py
+│       ├── create_tables.py
+│       ├── Dockerfile
+│       ├── flake-dirs.txt
+│       ├── music.py
+│       ├── playlist.py
+│       ├── requirements.txt
+│       ├── test_services.py
+│       └── user.py
+├── cluster
+│   ├── awscred-tpl.yaml
+│   ├── awscred.yaml
+│   ├── cloudformationdynamodb.json
+│   ├── cloudformationdynamodb-tpl.json
+│   ├── db-nohealth-tpl.yaml
+│   ├── db-nohealth.yaml
+│   ├── db-sm.yaml
+│   ├── db-tpl.yaml
+│   ├── db-vs-delay.yaml
+│   ├── db-vs-fault.yaml
+│   ├── db-vs.yaml
+│   ├── db.yaml
+│   ├── dynamodb-service-entry-tpl.yaml
+│   ├── dynamodb-service-entry.yaml
+│   ├── eks-admin-service-account.yaml
+│   ├── grafana-flask-configmap.yaml
+│   ├── Kiali-sample-graph.png
+│   ├── loader-tpl.yaml
+│   ├── loader.yaml
+│   ├── monitoring-virtualservice.yaml
+│   ├── music-header.yaml
+│   ├── playlist-header.yaml
+│   ├── s1-nohealth-tpl.yaml
+│   ├── s1-nohealth.yaml
+│   ├── s1-sm.yaml
+│   ├── s1-tpl.yaml
+│   ├── s1-vs.yaml
+│   ├── s1.yaml
+│   ├── s2-dpl-v1-tpl.yaml
+│   ├── s2-dpl-v1.yaml
+│   ├── s2-dpl-v2-tpl.yaml
+│   ├── s2-dpl-v2.yaml
+│   ├── s2-dpl.yaml
+│   ├── s2-nohealth-tpl.yaml
+│   ├── s2-nohealth.yaml
+│   ├── s2-sm.yaml
+│   ├── s2-svc.yaml
+│   ├── s2-vs-canary.yaml
+│   ├── s2-vs.yaml
+│   ├── s3-sm.yaml
+│   ├── s3-tpl.yaml
+│   ├── s3-vs.yaml
+│   ├── s3.yaml
+│   ├── service-gateway.yaml
+│   ├── tpl-vars-blank.txt
+│   ├── tpl-vars.txt
+│   └── users-header.yaml
+├── db
+│   ├── app.py
+│   ├── app-tpl.py
+│   ├── Dockerfile
+│   ├── LICENSE
+│   ├── README.md
+│   └── requirements.txt
+├── gatling
+│   ├── resources
+│   │   ├── music.csv
+│   │   ├── playlist.csv
+│   │   └── users.csv
+│   ├── results
+│   ├── simulations
+│   │   └── proj756
+│   │       ├── BasicSimulation.scala
+│   │       └── ReadTables.scala
+│   └── target
+├── loader
+│   ├── app.py
+│   ├── Dockerfile
+│   ├── LICENSE
+│   ├── README.md
+│   └── requirements.txt
+├── logs
+├── mcli
+│   ├── Dockerfile
+│   ├── Makefile
+│   ├── mcli.py
+│   └── requirements.txt
+├── media
+│   ├── ts1.png
+│   ├── ts2.png
+│   ├── ts3.png
+│   └── ts4.png
+├── s1
+│   ├── app.py
+│   ├── Dockerfile
+│   ├── LICENSE
+│   ├── README.md
+│   └── requirements.txt
+├── s2
+│   ├── app.py
+│   ├── Dockerfile
+│   └── requirements.txt
+├── s3
+│   ├── app.py
+│   ├── Dockerfile
+│   └── requirements.txt
+└── tools
+    ├── aws-cred.sh
+    ├── aws-rotate-cred.sh
+    ├── build-configmap.sh
+    ├── call-sed.sh
+    ├── find-canonical-owner.sh
+    ├── findstring.sh
+    ├── gatling.sh
+    ├── getip.sh
+    ├── kill-gatling.sh
+    ├── list-dynamodb-tables.sh
+    ├── list-gatling.sh
+    ├── make.sh
+    ├── prep-csil.sh
+    ├── process-templates.sh
+    ├── profiles.sh
+    ├── run-if-cmd-exists.sh
+    ├── s2ver.sh
+    ├── shell.sh
+    ├── waiteq.sh
+    └── waitne.sh
+~~~
 
 ## Prerequisite
 
