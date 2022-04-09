@@ -72,22 +72,14 @@ $ make -f k8s.mak cri
 
 There is one manual step left before the system can come up auto-magically: **to switch your container repositories to public access.** 
 
-### 6. Building your images
-In this step, you will build four services, db, s1, s2 and s3. 
 
-~~~
-$ make -f k8s.mak cri
-~~~
-
-After the first time running this command, don't forget **to switch your container repositories to public access.** 
-
-### 7. Deploying all the services
+### 6. Deploying all the services
 
 ~~~
 $ make -f k8s.mak gw db s1 s2 s3
 ~~~
 
-### 8. Check the logs of the services
+### 7. Check the logs of the services
 ~~~
 $ k9s -n c756ns
 ~~~
@@ -96,7 +88,7 @@ If you deploy the services successfully, you'd get a lot of `200` status code fo
 <img src="media/ts2.png" width="80%" height="80%" />
 <img src="media/ts3.png" width="80%" height="80%" />
 
-### 9. Test your Api
+### 8. Test your Api
 
 ~~~
 # get the external ip address
