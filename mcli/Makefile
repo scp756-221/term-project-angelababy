@@ -1,6 +1,6 @@
 # Makefile for standalone Music service (S2)
 
-VER=v0.8
+VER=v1.0
 
 SERVER=`docker inspect s2 --format '{{.NetworkSettings.IPAddress}}'`
 PORT=30001
