@@ -109,7 +109,7 @@ http://external-ip-address:80/api/v1/music/
 http://external-ip-address:80/api/v1/playlist/
 ```
 
-Try to send a `create_playlist` to the playlist service by postman. In normal case, you'd get a `200` return status code and a playlist id.
+Try to send a `create_playlist` to the playlist service by postman. In normal case, you'd get a `200` return status code and a `playlist_id`.
 
 <img src="media/ts4.png" width="80%" height="80%" />
 
