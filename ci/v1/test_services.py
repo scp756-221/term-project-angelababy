@@ -23,18 +23,15 @@ def userv(request, user_url, auth):
 
 @pytest.fixture
 def username(request):
-    # Recorded 1956
     return ('Smith', 'JamesSmith@sfu.ca', 'James')
 
 
 @pytest.fixture
 def new_user(request):
-    # Recorded 1956
     return ('Johnson', 'DavidJohnson@sfu.ca', 'David')
 
 
 def test_simple_run_s1(userv, username, new_user):
-    # Original recording, 1952
     trc, user_id = userv.create(username[0], username[1], username[2])
     assert trc == 200
 
@@ -42,8 +39,7 @@ def test_simple_run_s1(userv, username, new_user):
     assert (trc == 200 and lname == username[0] and email == username[1]
             and fname == username[2])
 
-    trc, _ = userv.update(user_id, new_user[0],
-                          new_user[1], new_user[2])
+    trc = userv.update(user_id, new_user[0], new_user[1], new_user[2])
     assert trc == 200
 
     trc, lname, email, fname = userv.get(user_id)
@@ -53,6 +49,7 @@ def test_simple_run_s1(userv, username, new_user):
     userv.delete(user_id)
     try:
         trc = userv.get(user_id)
+        # An exception would be thrown by user.py if delete() success.
         assert False
     except Exception:
         assert True
@@ -66,23 +63,21 @@ def mserv(request, music_url, auth):
 
 @pytest.fixture
 def song(request):
-    # Recorded 1956
     return ('Elvis Presley', 'Hound Dog')
 
 
 def test_simple_run_s2(mserv, song):
-    # Original recording, 1952
     trc, m_id = mserv.create(song[0], song[1])
     assert trc == 200
     trc, artist, title = mserv.read(m_id)
     assert (trc == 200 and artist == song[0] and title == song[1])
     mserv.delete(m_id)
+    # An exception would be thrown by music.py if delete() success.
     try:
         trc = mserv.read(m_id)
         assert False
     except Exception:
         assert True
-    # No status to check
 
 
 @pytest.fixture
@@ -92,7 +87,6 @@ def plserv(request, playlist_url, auth):
 
 @pytest.fixture
 def song2(request):
-    # Recorded 1956
     return ('Elvis Presley', 'Jailhouse Rock')
 
 
@@ -102,7 +96,6 @@ def myPlayList(request):
 
 
 def test_simple_run_s3(mserv, plserv, song, song2, myPlayList):
-    # Original recording, 1952
     trc, m_id = mserv.create(song[0], song[1])
     trc, m2_id = mserv.create(song2[0], song2[1])
     trc, pl_id = plserv.create(myPlayList, [m_id])
@@ -126,7 +119,7 @@ def test_simple_run_s3(mserv, plserv, song, song2, myPlayList):
     plserv.delete(pl_id)
     try:
         trc = plserv.get(pl_id)
+        # Exception would be thrown by playlist.py if delete() success.
         assert False
     except Exception:
         assert True
-    # No status to check
