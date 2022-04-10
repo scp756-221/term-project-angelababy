@@ -12,16 +12,14 @@ This is the directory structure of our project:
 term-project-angelababy
 ├── allclouds-tpl.mak
 ├── api-tpl.mak
-├── az-tpl.mak
 ├── eks-tpl.mak
 ├── gatling-all.sh
 ├── gatling-music.sh
 ├── gatling-playlist.sh
 ├── gatling-user.sh
-├── gcp-tpl.mak
 ├── helm-kube-stack-values.yaml
 ├── k8s-tpl.mak
-├── mk-tpl.mak
+├── logs
 ├── monitoring-lb-services.yaml
 ├── obs.mak
 ├── README.md
@@ -119,7 +117,9 @@ term-project-angelababy
 │   ├── LICENSE
 │   ├── README.md
 │   └── requirements.txt
-├── logs
+├── monitoring-lb-services.yaml
+├── obs.mak
+├── README.md
 ├── mcli
 │   ├── Dockerfile
 │   ├── Makefile
