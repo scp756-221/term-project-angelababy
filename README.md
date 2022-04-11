@@ -220,7 +220,6 @@ To install Istio and label the c756ns namespace:
 $ kubectl config use-context aws756
 $ istioctl install -y --set profile=demo --set hub=gcr.io/istio-release
 $ kubectl label namespace c756ns istio-injection=enabled
-$ kubectl get svc --all-namespaces | cut -c -140
 ~~~
 
 ### 5. Building your images
