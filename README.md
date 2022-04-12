@@ -268,5 +268,13 @@ Try to send a `create_playlist` to the playlist service by postman. In normal ca
 
 ## Gatling
 
+```
+# Load test of all three services
+./gatling-all.sh <number_of_user>
 
+# Check running Gatling docker
+docker container ls
 
+# Check logs of Gatling docker
+docker logs <docker_name>
+```
