@@ -20,7 +20,7 @@ import requests
 import simplejson as json
 
 # The application
-
+PERCENT_ERROR = 0
 app = Flask(__name__)
 
 metrics = PrometheusMetrics(app)
@@ -59,6 +59,13 @@ def get_playlist(playlist_id):
                         status=401,
                         mimetype='application/json')
     payload = {"objtype": "playlist", "objkey": playlist_id}
+    # This version will return 500 for a fraction of its calls
+    if random.randrange(100) < PERCENT_ERROR:
+        return Response(json.dumps({"error": "get_song failed"}),
+                        status=500,
+                        mimetype='application/json')
+
+
 
     url = db['name'] + '/' + db['endpoint'][0]
     response = requests.get(
