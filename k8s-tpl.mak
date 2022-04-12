@@ -308,9 +308,9 @@ s2: $(LOG_DIR)/s2.repo.log cluster/s2-dpl-$(S2_VER).yaml cluster/s2-svc.yaml clu
 	$(KC) -n $(APP_NS) apply -f cluster/s2-vs.yaml | tee -a $(LOG_DIR)/s2.log
 
 s3: $(LOG_DIR)/s3-$(S3_VER).repo.log cluster/s3-dpl-$(S3_VER).yaml
-        $(KC) -n $(APP_NS) apply -f cluster/s3-dpl-$(S3_VER).yaml | tee $(LOG_DIR)/s3-$(S3_VER).log
-        $(KC) -n $(APP_NS) apply -f cluster/s3-sm.yaml | tee -a $(LOG_DIR)/s3.log
-        $(KC) -n $(APP_NS) apply -f cluster/s3-vs.yaml | tee -a $(LOG_DIR)/s3.log
+	$(KC) -n $(APP_NS) apply -f cluster/s3-dpl-$(S3_VER).yaml | tee $(LOG_DIR)/s3-$(S3_VER).log
+	$(KC) -n $(APP_NS) apply -f cluster/s3-sm.yaml | tee -a $(LOG_DIR)/s3.log
+	$(KC) -n $(APP_NS) apply -f cluster/s3-vs.yaml | tee -a $(LOG_DIR)/s3.log
 
 # Update S3 and associated monitoring, rebuilding if necessary
 #s3: $(LOG_DIR)/s3.repo.log cluster/s3.yaml cluster/s3-sm.yaml cluster/s3-vs.yaml
@@ -350,9 +350,9 @@ $(LOG_DIR)/s2.repo.log: s2/Dockerfile s2/app.py s2/requirements.txt
 
 # Build the s3 service
 $(LOG_DIR)/s3-$(S3_VER).repo.log: s3/$(S3_VER)/Dockerfile s3/$(S3_VER)/app.py s3/$(S3_VER)/requirements.txt
-        make -f k8s.mak --no-print-directory registry-login
-        $(DK) build $(ARCH) -t $(CREG)/$(REGID)/cmpt756s3:$(S3_VER) s3/$(S3_VER) | tee $(LOG_DIR)/s3-$(S3_VER).img.log
-        $(DK) push $(CREG)/$(REGID)/cmpt756s3:$(S3_VER) | tee $(LOG_DIR)/s3-$(S3_VER).repo.log
+	make -f k8s.mak --no-print-directory registry-login
+	$(DK) build $(ARCH) -t $(CREG)/$(REGID)/cmpt756s3:$(S3_VER) s3/$(S3_VER) | tee $(LOG_DIR)/s3-$(S3_VER).img.log
+	$(DK) push $(CREG)/$(REGID)/cmpt756s3:$(S3_VER) | tee $(LOG_DIR)/s3-$(S3_VER).repo.log
 
 # Build the s3 service
 #$(LOG_DIR)/s3.repo.log: s3/Dockerfile s3/app.py s3/requirements.txt
